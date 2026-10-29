@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Include="Cmdlets\**\*.cs" />
+    <Compile Include="Initialization\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup>
