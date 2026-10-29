@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <Version>0.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,5 +18,20 @@
     <ProjectReference Include="..\USBDevice.Domain\USBDevice.Domain.csproj" />
     <ProjectReference Include="..\USBDevice.Intrastructure\USBDevice.Intrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Manifest\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Manifest\USBDevice.psd1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>USBDevice.psd1</TargetPath>
+    </None>
+  </ItemGroup>
+
+  <Target Name="SetModuleManifestVersion" AfterTargets="Build">
+    <Exec Command="pwsh.exe -NoLogo -NoProfile -NonInteractive -Command &quot;$manifest = '$(TargetDir)USBDevice.psd1'; $content = [IO.File]::ReadAllText($manifest); $pattern = '(?m)^ModuleVersion\s*=\s*''[^'']+''\s*$'; $matches = [regex]::Matches($content, $pattern); if ($matches.Count -ne 1) { throw 'Expected exactly one ModuleVersion entry in the output manifest.' }; $replacement = 'ModuleVersion = ''$(Version)'''; $updated = [regex]::Replace($content, $pattern, $replacement, 1); if ($updated -ne $content) { [IO.File]::WriteAllText($manifest, $updated, [Text.UTF8Encoding]::new($false)) }&quot;" />
+  </Target>
 
 </Project>
