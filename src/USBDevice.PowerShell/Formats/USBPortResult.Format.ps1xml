@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <Name>USBPortInfoTable</Name>
+      <ViewSelectedBy>
+        <TypeName>USBDevice.Domain.Models.USBPortInfo</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Hub Name</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Hub Instance ID</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Port Index</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Connected</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Connection Speed</Label>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>HubName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>HubInstanceId</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>PortIndex</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IsConnected</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ConnectionSpeed</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>
