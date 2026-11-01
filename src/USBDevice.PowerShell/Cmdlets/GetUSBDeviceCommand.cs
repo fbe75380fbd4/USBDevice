@@ -47,8 +47,13 @@ namespace USBDevice.PowerShell.Cmdlets
         private readonly IUSBInspector _usbInspector;
 
         public GetUSBDeviceCommand()
+            : this(new Win32USBInspector())
         {
-            _usbInspector = new Win32USBInspector();
+        }
+
+        protected GetUSBDeviceCommand(IUSBInspector usbInspector)
+        {
+            _usbInspector = usbInspector;
         }
 
         protected override void ProcessRecord()
