@@ -3,6 +3,7 @@ using System.Management.Automation;
 using USBDevice.Domain.Interfaces;
 using USBDevice.Domain.Models;
 using USBDevice.Infrastructure.Services;
+using USBDevice.PowerShell.Helpers;
 
 namespace USBDevice.PowerShell.Cmdlets
 {
@@ -59,16 +60,16 @@ namespace USBDevice.PowerShell.Cmdlets
             switch (activeSet)
             {
                 case "ByHubName":
-                    rawPatterns = HubName ?? Array.Empty<string>();
+                    rawPatterns = HubName;
                     break;
                 case "ByHubInstanceId":
-                    rawPatterns = HubInstanceId ?? Array.Empty<string>();
+                    rawPatterns = HubInstanceId;
                     break;
                 case "ByFriendlyName":
-                    rawPatterns = FriendlyName ?? Array.Empty<string>();
+                    rawPatterns = FriendlyName;
                     break;
                 case "ByUsbVersion":
-                    rawPatterns = UsbVersion ?? Array.Empty<string>();
+                    rawPatterns = UsbVersion;
                     break;
                 default:
                     rawPatterns = Array.Empty<string>();
@@ -76,9 +77,7 @@ namespace USBDevice.PowerShell.Cmdlets
             }
             ;
 
-            var wildcardPatterns = Array.ConvertAll(rawPatterns, pattern =>
-                new WildcardPattern(pattern, WildcardOptions.IgnoreCase | WildcardOptions.Compiled)
-            );
+            var wildcardPatterns = WildcardMatcher.CreatePatterns(rawPatterns);
 
             var devices = _usbInspector.GetUSBDeviceInfo();
             
@@ -89,16 +88,16 @@ namespace USBDevice.PowerShell.Cmdlets
                 switch (activeSet)
                 {
                     case "ByHubName":
-                        matchResult = MatchesAnyWildcard(device.HubName, wildcardPatterns);
+                        matchResult = WildcardMatcher.MatchesAnyWildcard(device.HubName, wildcardPatterns);
                         break;
                     case "ByHubInstanceId":
-                        matchResult = MatchesAnyWildcard(device.HubInstanceId, wildcardPatterns);
+                        matchResult = WildcardMatcher.MatchesAnyWildcard(device.HubInstanceId, wildcardPatterns);
                         break;
                     case "ByFriendlyName":
-                        matchResult = MatchesAnyWildcard(device.FriendlyName, wildcardPatterns);
+                        matchResult = WildcardMatcher.MatchesAnyWildcard(device.FriendlyName, wildcardPatterns);
                         break;
                     case "ByUsbVersion":
-                        matchResult = MatchesAnyWildcard(device.USBVersion, wildcardPatterns);
+                        matchResult = WildcardMatcher.MatchesAnyWildcard(device.USBVersion, wildcardPatterns);
                         break;
                     default:
                         matchResult = true;
@@ -113,20 +112,6 @@ namespace USBDevice.PowerShell.Cmdlets
                     WriteObject(device);
                 }
             }
-        }
-
-        private bool MatchesAnyWildcard(string targetValue, WildcardPattern[] patterns)
-        {
-            if (string.IsNullOrEmpty(targetValue)) return false;
-
-            foreach (var pattern in patterns)
-            {
-                if (pattern.IsMatch(targetValue))
-                {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

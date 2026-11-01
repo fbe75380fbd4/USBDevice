@@ -3,6 +3,7 @@ using System.Management.Automation;
 using USBDevice.Domain.Interfaces;
 using USBDevice.Domain.Models;
 using USBDevice.Infrastructure.Services;
+using USBDevice.PowerShell.Helpers;
 
 namespace USBDevice.PowerShell.Cmdlets
 {
@@ -52,19 +53,17 @@ namespace USBDevice.PowerShell.Cmdlets
             switch (activeSet)
             {
                 case "ByHubName":
-                    rawPatterns = HubName ?? Array.Empty<string>();
+                    rawPatterns = HubName;
                     break;
                 case "ByHubInstanceId":
-                    rawPatterns = HubInstanceId ?? Array.Empty<string>();
+                    rawPatterns = HubInstanceId;
                     break;
                 default:
                     rawPatterns = Array.Empty<string>();
                     break;
             };
 
-            var wildcardPatterns = Array.ConvertAll(rawPatterns, pattern =>
-                new WildcardPattern(pattern, WildcardOptions.IgnoreCase | WildcardOptions.Compiled)
-            );
+            var wildcardPatterns = WildcardMatcher.CreatePatterns(rawPatterns);
 
             var ports = _usbInspector.GetUSBPortInfo();
 
@@ -75,10 +74,10 @@ namespace USBDevice.PowerShell.Cmdlets
                 switch (activeSet)
                 {
                     case "ByHubName":
-                        matchResult = MatchesAnyWildcard(port.HubName, wildcardPatterns);
+                        matchResult = WildcardMatcher.MatchesAnyWildcard(port.HubName, wildcardPatterns);
                         break;
                     case "ByHubInstanceId":
-                        matchResult = MatchesAnyWildcard(port.HubInstanceId, wildcardPatterns);
+                        matchResult = WildcardMatcher.MatchesAnyWildcard(port.HubInstanceId, wildcardPatterns);
                         break;
                     default:
                         matchResult = true;
@@ -94,20 +93,6 @@ namespace USBDevice.PowerShell.Cmdlets
                     WriteObject(port);
                 }
             }
-        }
-
-        private bool MatchesAnyWildcard(string targetValue, WildcardPattern[] patterns)
-        {
-            if (string.IsNullOrEmpty(targetValue)) return false;
-
-            foreach (var pattern in patterns)
-            {
-                if (pattern.IsMatch(targetValue))
-                {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }
