@@ -1,0 +1,125 @@
+name: Build, test, and publish
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build-test-package:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore solution
+        run: dotnet restore .\USBDevice.sln
+
+      - name: Build solution
+        run: dotnet build .\USBDevice.sln --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test .\USBDevice.sln --configuration Release --no-build --no-restore
+
+      - name: Prepare and validate module package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $outputPath = Join-Path $env:GITHUB_WORKSPACE 'src\USBDevice.PowerShell\bin\Release\netstandard2.0'
+          $packagePath = Join-Path $env:GITHUB_WORKSPACE 'artifacts\USBDevice'
+
+          if (-not (Test-Path -LiteralPath $outputPath)) {
+            throw "Build output was not found: $outputPath"
+          }
+
+          New-Item -ItemType Directory -Path $packagePath -Force | Out-Null
+          Copy-Item -Path (Join-Path $outputPath '*') -Destination $packagePath -Recurse -Force
+
+          Get-ChildItem -Path $packagePath -Recurse -File |
+            Where-Object { $_.Extension -in '.pdb', '.json' } |
+            Remove-Item -Force
+
+          $manifestPath = Join-Path $packagePath 'USBDevice.psd1'
+          $manifest = Test-ModuleManifest -Path $manifestPath -ErrorAction Stop
+
+          $requiredFiles = @(
+            'USBDevice.PowerShell.dll',
+            'USBDevice.Domain.dll',
+            'USBDevice.Intrastructure.dll',
+            'USBDevice-help.xml',
+            'Formats\USBPortResult.Format.ps1xml'
+          )
+
+          foreach ($relativePath in $requiredFiles) {
+            $requiredPath = Join-Path $packagePath $relativePath
+            if (-not (Test-Path -LiteralPath $requiredPath)) {
+              throw "Required module file is missing: $relativePath"
+            }
+          }
+
+          $unexpectedFiles = Get-ChildItem -Path $packagePath -Recurse -File |
+            Where-Object { $_.Extension -in '.pdb', '.json' }
+          if ($unexpectedFiles) {
+            throw 'Debug symbols or JSON build metadata remain in the package.'
+          }
+
+          Import-Module -Name $manifestPath -Force -ErrorAction Stop
+          if (-not (Get-FormatData -TypeName 'USBDevice.Domain.Models.USBPortInfo')) {
+            throw 'USB port table formatting was not loaded from the package.'
+          }
+
+          foreach ($commandName in 'Get-USBDevice', 'Get-USBPort') {
+            $help = Get-Help -Name $commandName -Full
+            if (-not $help.Synopsis) {
+              throw "External help was not loaded for $commandName."
+            }
+          }
+
+          "PACKAGE_PATH=$packagePath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "MODULE_VERSION=$($manifest.Version)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Publish module to PowerShell Gallery
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: pwsh
+        env:
+          PSGALLERY_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ([string]::IsNullOrWhiteSpace($env:PSGALLERY_API_KEY)) {
+            throw 'Set the PSGALLERY_API_KEY repository secret before publishing a release.'
+          }
+
+          Publish-Module `
+            -Path $env:PACKAGE_PATH `
+            -Repository PSGallery `
+            -NuGetApiKey $env:PSGALLERY_API_KEY `
+            -ErrorAction Stop
+
+      - name: Create release archive
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $zipPath = Join-Path $env:RUNNER_TEMP 'USBDevice.zip'
+          Compress-Archive `
+            -Path (Join-Path $env:PACKAGE_PATH '*') `
+            -DestinationPath $zipPath `
+            -Force
+          "RELEASE_ARCHIVE=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Create GitHub release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "v$env:MODULE_VERSION" $env:RELEASE_ARCHIVE --title "v$env:MODULE_VERSION" --generate-notes --latest

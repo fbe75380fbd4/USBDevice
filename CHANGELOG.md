@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.0.1
+## 1.0.0
 
 - Added the `Get-USBDevice` cmdlet for inspecting connected USB devices.
 - Added the `Get-USBPort` cmdlet for inspecting USB hub ports.
