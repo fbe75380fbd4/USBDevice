@@ -34,6 +34,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>Formats\USBPortResult.Format.ps1xml</TargetPath>
     </None>
+    <None Update="Help Files\USBDevice-help.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>USBDevice-help.xml</TargetPath>
+    </None>
   </ItemGroup>
 
   <Target Name="SetModuleManifestVersion" AfterTargets="Build">

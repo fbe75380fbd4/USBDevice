@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<helpItems xmlns="http://msh" schema="maml">
+  <command:command xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+                   xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+                   xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+    <command:details>
+      <command:name>Get-USBDevice</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>USBDevice</command:noun>
+      <maml:description>
+        <maml:para>Gets connected USB devices and reports their hub, port, identifiers, USB version, and supported and negotiated speeds.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets connected USB devices. Text filters support PowerShell wildcards and are case-insensitive. The cmdlet is supported on Windows only.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-USBDevice</maml:name>
+        <command:parameter required="false" variableLength="false">
+          <maml:name>PortIndex</maml:name>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-USBDevice</maml:name>
+        <command:parameter required="true" variableLength="true">
+          <maml:name>HubName</maml:name>
+          <command:parameterValue required="true" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false">
+          <maml:name>PortIndex</maml:name>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-USBDevice</maml:name>
+        <command:parameter required="true" variableLength="true">
+          <maml:name>HubInstanceId</maml:name>
+          <command:parameterValue required="true" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false">
+          <maml:name>PortIndex</maml:name>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-USBDevice</maml:name>
+        <command:parameter required="true" variableLength="true">
+          <maml:name>FriendlyName</maml:name>
+          <command:parameterValue required="true" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false">
+          <maml:name>PortIndex</maml:name>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-USBDevice</maml:name>
+        <command:parameter required="true" variableLength="true">
+          <maml:name>UsbVersion</maml:name>
+          <command:parameterValue required="true" variableLength="true">String[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false">
+          <maml:name>PortIndex</maml:name>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter>
+        <maml:name>HubName</maml:name>
+        <maml:description><maml:para>Filters devices by the friendly name of their USB hub. Supports wildcards.</maml:para></maml:description>
+        <command:parameterValue required="true" variableLength="true">String[]</command:parameterValue>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter>
+        <maml:name>HubInstanceId</maml:name>
+        <maml:description><maml:para>Filters devices by the instance ID of their USB hub. Supports wildcards.</maml:para></maml:description>
+        <command:parameterValue required="true" variableLength="true">String[]</command:parameterValue>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter>
+        <maml:name>FriendlyName</maml:name>
+        <maml:description><maml:para>Filters devices by their friendly display name. Supports wildcards.</maml:para></maml:description>
+        <command:parameterValue required="true" variableLength="true">String[]</command:parameterValue>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter>
+        <maml:name>UsbVersion</maml:name>
+        <maml:description><maml:para>Filters devices by their USB version, such as 2.0 or 3.0. Supports wildcards.</maml:para></maml:description>
+        <command:parameterValue required="true" variableLength="true">String[]</command:parameterValue>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter>
+        <maml:name>PortIndex</maml:name>
+        <maml:description><maml:para>Filters devices to the specified port index.</maml:para></maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:defaultValue>All ports</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType><dev:type><maml:name>None</maml:name><maml:description><maml:para>You cannot pipe input to this cmdlet.</maml:para></maml:description></dev:type></command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue><dev:type><maml:name>USBDevice.Domain.Models.USBDeviceInfo</maml:name><maml:description><maml:para>One object for each matching connected USB device.</maml:para></maml:description></dev:type></command:returnValue>
+    </command:returnValues>
+    <command:examples>
+      <command:example>
+        <maml:title>Example 1: List all connected USB devices</maml:title>
+        <maml:description><maml:para>Gets information about every connected USB device.</maml:para></maml:description>
+        <command:code>Get-USBDevice</command:code>
+      </command:example>
+      <command:example>
+        <maml:title>Example 2: Find devices by friendly name</maml:title>
+        <maml:description><maml:para>Uses a wildcard to find devices whose friendly name contains “Keyboard”.</maml:para></maml:description>
+        <command:code>Get-USBDevice -FriendlyName '*Keyboard*'</command:code>
+      </command:example>
+      <command:example>
+        <maml:title>Example 3: Filter by hub and port</maml:title>
+        <maml:description><maml:para>Returns devices connected to port 3 on a hub whose name matches the wildcard.</maml:para></maml:description>
+        <command:code>Get-USBDevice -HubName '*Root Hub*' -PortIndex 3</command:code>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+  <command:command xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10"
+                   xmlns:maml="http://schemas.microsoft.com/maml/2004/10"
+                   xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10">
+    <command:details>
+      <command:name>Get-USBPort</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>USBPort</command:noun>
+      <maml:description>
+        <maml:para>Gets USB hub ports and reports hub identity, port index, connection status, and connection speed.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Gets USB hub ports. Text filters support PowerShell wildcards and are case-insensitive. The cmdlet is supported on Windows only.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-USBPort</maml:name>
+        <command:parameter required="false" variableLength="false"><maml:name>PortIndex</maml:name><command:parameterValue required="true" variableLength="false">Int32</command:parameterValue></command:parameter>
+        <command:parameter required="false" variableLength="false"><maml:name>IsConnected</maml:name><maml:description><maml:para>SwitchParameter</maml:para></maml:description></command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-USBPort</maml:name>
+        <command:parameter required="true" variableLength="true"><maml:name>HubName</maml:name><command:parameterValue required="true" variableLength="true">String[]</command:parameterValue></command:parameter>
+        <command:parameter required="false" variableLength="false"><maml:name>PortIndex</maml:name><command:parameterValue required="true" variableLength="false">Int32</command:parameterValue></command:parameter>
+        <command:parameter required="false" variableLength="false"><maml:name>IsConnected</maml:name><maml:description><maml:para>SwitchParameter</maml:para></maml:description></command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-USBPort</maml:name>
+        <command:parameter required="true" variableLength="true"><maml:name>HubInstanceId</maml:name><command:parameterValue required="true" variableLength="true">String[]</command:parameterValue></command:parameter>
+        <command:parameter required="false" variableLength="false"><maml:name>PortIndex</maml:name><command:parameterValue required="true" variableLength="false">Int32</command:parameterValue></command:parameter>
+        <command:parameter required="false" variableLength="false"><maml:name>IsConnected</maml:name><maml:description><maml:para>SwitchParameter</maml:para></maml:description></command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter>
+        <maml:name>HubName</maml:name>
+        <maml:description><maml:para>Filters ports by the friendly name of their USB hub. Supports wildcards.</maml:para></maml:description>
+        <command:parameterValue required="true" variableLength="true">String[]</command:parameterValue>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter>
+        <maml:name>HubInstanceId</maml:name>
+        <maml:description><maml:para>Filters ports by the instance ID of their USB hub. Supports wildcards.</maml:para></maml:description>
+        <command:parameterValue required="true" variableLength="true">String[]</command:parameterValue>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter>
+        <maml:name>PortIndex</maml:name>
+        <maml:description><maml:para>Filters results to the specified port index.</maml:para></maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:defaultValue>All ports</dev:defaultValue>
+      </command:parameter>
+      <command:parameter>
+        <maml:name>IsConnected</maml:name>
+        <maml:description><maml:para>When specified, returns only connected ports. When omitted, returns both connected and disconnected ports.</maml:para></maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType><dev:type><maml:name>None</maml:name><maml:description><maml:para>You cannot pipe input to this cmdlet.</maml:para></maml:description></dev:type></command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue><dev:type><maml:name>USBDevice.Domain.Models.USBPortInfo</maml:name><maml:description><maml:para>One object for each matching USB hub port.</maml:para></maml:description></dev:type></command:returnValue>
+    </command:returnValues>
+    <command:examples>
+      <command:example>
+        <maml:title>Example 1: List all USB hub ports</maml:title>
+        <maml:description><maml:para>Gets all ports reported by the USB hubs.</maml:para></maml:description>
+        <command:code>Get-USBPort</command:code>
+      </command:example>
+      <command:example>
+        <maml:title>Example 2: List connected ports</maml:title>
+        <maml:description><maml:para>Returns only connected ports on hubs whose names match the wildcard.</maml:para></maml:description>
+        <command:code>Get-USBPort -HubName '*Root Hub*' -IsConnected</command:code>
+      </command:example>
+      <command:example>
+        <maml:title>Example 3: Find a port by hub instance ID and index</maml:title>
+        <maml:description><maml:para>Filters the results to port 2 on a hub with a matching instance ID.</maml:para></maml:description>
+        <command:code>Get-USBPort -HubInstanceId 'USB\ROOT_HUB30*' -PortIndex 2</command:code>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks />
+  </command:command>
+</helpItems>
